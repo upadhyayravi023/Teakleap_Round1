@@ -62,6 +62,28 @@ def test_create_candidate_invalid_status(client):
     })
     assert response.status_code == 422
 
+def test_create_bulk_candidates(client):
+    payload = [
+        {
+            "name": "Leo Bulk 1",
+            "email": "leo1@example.com",
+            "skill": "React",
+            "status": "applied"
+        },
+        {
+            "name": "Leo Bulk 2",
+            "email": "leo2@example.com",
+            "skill": "Python",
+            "status": "applied"
+        }
+    ]
+    res = client.post("/candidates", json=payload)
+    assert res.status_code == 201
+    data = res.json()
+    assert isinstance(data, list)
+    assert len(data) == 2
+    assert "id" in data[0]
+
 def test_get_all_candidates(client):
     client.post("/candidates", json={
         "name": "Alice",

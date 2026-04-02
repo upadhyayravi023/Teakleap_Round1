@@ -1,16 +1,16 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 from fastapi import APIRouter, Depends, status
 from .schemas import CandidateCreate, CandidateResponse, CandidateStatusUpdate, CandidateStatus
 from .service import CandidateService, get_candidate_service
 
 router = APIRouter(prefix="/candidates", tags=["Candidates"])
 
-@router.post("", response_model=CandidateResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=Union[CandidateResponse, List[CandidateResponse]], status_code=status.HTTP_201_CREATED)
 async def create_candidate(
-    candidate: CandidateCreate,
+    candidate: Union[CandidateCreate, List[CandidateCreate]],
     service: CandidateService = Depends(get_candidate_service)
 ):
-    return await service.create_candidate(candidate)
+    return await service.create_candidates(candidate)
 
 @router.get("", response_model=List[CandidateResponse], status_code=status.HTTP_200_OK)
 async def get_candidates(

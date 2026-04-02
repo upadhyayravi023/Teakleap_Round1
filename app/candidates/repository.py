@@ -27,6 +27,21 @@ class CandidateRepository:
             del candidate_data["_id"]
         return CandidateResponse(**candidate_data)
 
+    async def create_many(self, candidates_in: List[CandidateCreate]) -> List[CandidateResponse]:
+        if not candidates_in:
+            return []
+            
+        docs = [cand.model_dump() for cand in candidates_in]
+        result = await self.collection.insert_many(docs)
+        
+        responses = []
+        for doc, inserted_id in zip(docs, result.inserted_ids):
+            doc["id"] = str(inserted_id)
+            if "_id" in doc:
+                del doc["_id"]
+            responses.append(CandidateResponse(**doc))
+        return responses
+
     async def get_all(self, status: Optional[CandidateStatus] = None) -> List[CandidateResponse]:
         query = {}
         if status:
