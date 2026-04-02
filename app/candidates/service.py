@@ -2,13 +2,17 @@ from typing import List, Optional
 from fastapi import Depends
 from .schemas import CandidateCreate, CandidateResponse, CandidateStatusUpdate, CandidateStatus
 from .repository import CandidateRepository, get_candidate_repository
-from app.core.exceptions import CandidateNotFoundError
+from app.core.exceptions import CandidateNotFoundError, DuplicateEmailError
 
 class CandidateService:
     def __init__(self, repository: CandidateRepository = Depends(get_candidate_repository)):
         self.repository = repository
 
     async def create_candidate(self, candidate_in: CandidateCreate) -> CandidateResponse:
+        existing_candidate = await self.repository.get_by_email(candidate_in.email)
+        if existing_candidate:
+            raise DuplicateEmailError(email=candidate_in.email)
+            
         return await self.repository.create(candidate_in)
 
     async def get_all_candidates(self, status: Optional[CandidateStatus] = None) -> List[CandidateResponse]:

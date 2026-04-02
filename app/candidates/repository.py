@@ -10,6 +10,13 @@ class CandidateRepository:
     def __init__(self, db: AsyncIOMotorDatabase):
         self.collection = db.get_collection("candidates")
 
+    async def get_by_email(self, email: str) -> Optional[CandidateResponse]:
+        doc = await self.collection.find_one({"email": email})
+        if doc:
+            doc["id"] = str(doc.pop("_id"))
+            return CandidateResponse(**doc)
+        return None
+
     async def create(self, candidate_in: CandidateCreate) -> CandidateResponse:
         candidate_data = candidate_in.model_dump()
         result = await self.collection.insert_one(candidate_data)

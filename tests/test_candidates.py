@@ -29,6 +29,21 @@ def test_create_candidate(client):
     assert data["email"] == "jane@example.com"
     assert "id" in data
 
+def test_create_candidate_duplicate_email(client):
+    payload = {
+        "name": "Unique Test",
+        "email": "duplicate@example.com",
+        "skill": "React",
+        "status": "applied"
+    }
+    # Initial insert should succeed
+    res1 = client.post("/candidates", json=payload)
+    assert res1.status_code == 201
+
+    # Second insert should fail with 409 Conflict
+    res2 = client.post("/candidates", json=payload)
+    assert res2.status_code == 409
+
 def test_create_candidate_invalid_email(client):
     response = client.post("/candidates", json={
         "name": "Invalid Email",

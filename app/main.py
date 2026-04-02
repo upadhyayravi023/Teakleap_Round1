@@ -6,7 +6,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 
 from app.candidates import router as candidates_router
-from app.core.exceptions import CandidateNotFoundError, InvalidCandidateDataError
+from app.core.exceptions import CandidateNotFoundError, InvalidCandidateDataError, DuplicateEmailError
 from app.core.database import db_obj
 
 @asynccontextmanager
@@ -30,6 +30,13 @@ app.include_router(candidates_router.router)
 async def candidate_not_found_handler(request: Request, exc: CandidateNotFoundError):
     return JSONResponse(
         status_code=404,
+        content={"detail": str(exc)},
+    )
+
+@app.exception_handler(DuplicateEmailError)
+async def duplicate_email_handler(request: Request, exc: DuplicateEmailError):
+    return JSONResponse(
+        status_code=409,
         content={"detail": str(exc)},
     )
 
