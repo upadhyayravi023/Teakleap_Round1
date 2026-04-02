@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Candidate Management API", 
     version="1.0.0", 
-    description="Feature-Driven Architecture with MongoDB Atlas",
+    description=" ",
     lifespan=lifespan
 )
 
