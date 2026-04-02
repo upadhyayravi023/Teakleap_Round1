@@ -1,9 +1,9 @@
-# 🚀 Candidate Management API
+# Candidate Management API
 
 A robust, feature-driven recruitment backend architected to manage candidates securely and efficiently. Built entirely using modern Python **FastAPI**, **Pydantic V2**, and **MongoDB Atlas** (via asynchronous `motor`).
 
 ### 🌍 **Live Deployment**
-> **[Insert Render Deployment Link Here]**
+> **https://teakleap-round1.onrender.com**
 
 ---
 
